@@ -16,9 +16,12 @@ User → Explorer → Planner → Executor → Tests → Reviewer → Repair if 
 ```
 
 The skill uses the current project's effective Codex configuration for model
-routing. It does not embed a model ID, credentials, or user-specific paths.
-When the configured `explorer` or `executor` agent is unavailable, the primary
-agent follows the same stages directly and reports that fallback.
+routing. When the active primary model is confirmed to be high-capability, it
+keeps planning and review while delegating search, ordinary implementation, and
+tests to lower-cost coding agents. It does not embed a model ID, credentials, or
+user-specific paths. When delegation or the configured `explorer`/`executor`
+roles are unavailable, the primary agent follows the same stages directly and
+reports that fallback.
 
 ## Install locally
 
