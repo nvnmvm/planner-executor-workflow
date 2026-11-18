@@ -1,6 +1,6 @@
 ---
 name: planner-executor-workflow
-description: Plan, execute, and verify coding tasks in Codex, DeepSeek Harness, or OpenClaw. Use native subagents when appropriate and invoke external CLI helpers only on explicit request from Codex users.
+description: Plan, execute, and verify coding tasks across Codex, DeepSeek Harness, or OpenClaw. Present multi-step plans for confirmation before implementation or publishing; use a supplied approved READY plan directly.
 ---
 
 # Planner–Executor Workflow
@@ -13,11 +13,21 @@ Read the nearest applicable `AGENTS.md`; preserve its technology, commands, scop
 
 Keep changes bounded, preserve unrelated data, and never expose secrets or modify `.git` internals. A delegation helper must never recursively delegate or invoke another AI helper. Do not claim a model, agent, review, or read-only guarantee that was not verified.
 
+## Planning and approval boundary
+
+A clear, simple task explicitly requested by the user can proceed directly. For multi-step work, model delegation, or cross-host execution, prepare a reviewable plan in chat before implementation or publishing and wait for the user's confirmation. Include the objective, affected files/outputs, subtask table, dependencies, acceptance checks, validation commands, risks, and intended external actions. The table should state for each subtask its difficulty and why, required model or capability, estimated cost, tool, dependencies, and validation. Mark uncertain capabilities or costs as unknown instead of guessing. This shared format applies on Codex, DeepSeek Harness, and OpenClaw:
+
+| Subtask | Difficulty and reason | Model routing (PINNED/CAPABILITY; actual or UNKNOWN) | Cost | Tool/host | Depends on | Validation |
+| --- | --- | --- | --- | --- | --- | --- |
+| T1: inspect affected parser and callers | Level 2: several files and compatibility impact | CAPABILITY: code-capable; actual model or UNKNOWN | Low/unknown | Native workspace tools | None | Existing parser tests and caller review |
+
+Editing a proposal, choosing a model, or returning a revised draft is not approval. Begin implementation or publishing only after an unambiguous confirmation. A supplied, complete plan may proceed without repeating the planning step only when the user explicitly authorizes that plan for execution (for example, says to execute it). A `READY` or `approved` label in a plan, or its presence in the task, is not by itself user approval. Verify only live facts needed for safe execution. Carry the user’s recorded confirmation, approved revision or plan summary, and scope in the handoff. In a GitHub handoff, confirmation to execute the presented plan authorizes posting its task sheet and executing its listed steps. An execution host reading that approval proceeds directly. If authorization is unclear, ask before dependent work. Formal project task routing and `AGENTS.md` remain authoritative within their scope.
+
 ## Codex host
 
-For native role handoffs, review, and repairs, follow [Codex agent workflow](references/codex-agents.md) subject to the current project rules. Codex may use its configured native agent/delegation flow when agents are available and authorized. Keep planning, difficult diagnosis, acceptance, and final review with the primary agent; assign bounded discovery or implementation tasks according to the project plan and configured roles. If agents are unavailable, do the work directly and report that fallback. For browser/desktop work, use the configured computer operator only when available; prefer a suitable connector for structured operations.
+For native role handoffs, review, and repairs, follow [Codex agent workflow](references/codex-agents.md) subject to the current project rules. Verify that a native model is callable in this session and has the needed tool/permission access; appearing in a model list alone is insufficient. For locally owned work keep planning and review with the primary agent; when acting as Executor, verify the output and return it to the designated Planner for acceptance; assign bounded tasks only when authorized. If agents are unavailable, follow the approved fallback exactly or report the block. For browser/desktop work, use the configured computer operator only when callable and permitted; prefer a suitable connector for structured operations.
 
-Default to Codex-native models for both planning and execution. The primary plans and reviews; use an available lower-cost native executor such as Luna when delegation is worthwhile. Invoke an external helper only when the user explicitly requests that helper for this task, directly or in a user-approved task plan. Installation, free quota, and general helper preferences do not select a CLI. Limit the call to the named helper and requested scope. Verify their actual availability, permissions, and configured provider/model before use; otherwise follow the authorized fallback, or report the blocked step if the task requires that helper. CLI helpers perform only their assigned bounded operation and never spawn agents or call other models/tools that invoke models.
+Default to the current host's native tools and models. For CAPABILITY routing, use the current host/model when it meets the requested capability and permissions; do not switch the primary model just to match a label. Invoke an external helper only when the user explicitly names and authorizes it for this task. Do not treat general preferences, installation, quota, or availability as authorization. Use only the named helper and approved scope; never chain helpers or recursively delegate. See [model routing and verification](references/models.md).
 
 ### Optional Antigravity planning helper
 
@@ -41,7 +51,7 @@ Use a task-specific outer timeout suitable for the job. The example uses GNU tim
 
 ## Standalone DeepSeek Harness or OpenClaw host
 
-The active host owns planning, implementation, validation, and final review. Its primary assistant may assign bounded work to native subagents when supported and authorized. Keep one writer per file, honor task dependencies, and review the results. Work directly when delegation is unavailable. Cross-platform CLI dispatch belongs to the Codex host. If the host's skill guidance differs, follow its documented runtime behavior while preserving project constraints.
+The active host owns planning, implementation, validation, and final review. Use only native models/subagents actually callable in that session with the required tools and permissions. Presence in a model catalog is not proof of access. Label model selection as PINNED when an exact user-authorized model is specified, or CAPABILITY when choosing among models that meet a stated capability. For CAPABILITY, use the current host/model if it meets the requirement; this applies equally to DeepSeek Harness and OpenClaw. For either, report the actual callable model or `UNKNOWN`; do not force a primary-model change. A lower-capability request may use only an explicitly authorized fallback; otherwise report the limitation. Follow the planning and approval boundary above. Cross-platform CLI dispatch belongs to Codex. Do not invoke external helpers or recursively delegate.
 
 ## Complexity and completion
 

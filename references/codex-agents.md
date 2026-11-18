@@ -29,9 +29,12 @@ The plan does not grant extra permissions or authorize unrelated changes.
 
 ## Route by the active model
 
-Before delegating, determine the current primary model's role from runtime
-metadata, the effective configuration, or documented model capabilities. Do not
-infer capability from a guessed model name and do not invent model IDs.
+Before delegating, determine the current primary model and its role from runtime
+metadata or effective configuration. Verify candidate native models are callable
+in this session and that the required tools and permissions are available; catalog
+listing is not proof. Do not infer capability from a guessed model name or invent
+model IDs. Preserve the current primary model unless the user explicitly requests
+a change. Report the actual model, or `UNKNOWN` when the runtime does not expose it.
 
 - **High-capability primary:** keep the current model as Planner, Architect, and
   Reviewer. For Level 2–3 work, use the platform's supported delegation mechanism
@@ -52,10 +55,14 @@ infer capability from a guessed model name and do not invent model IDs.
   material cost or behavior differences that cannot be resolved from the
   environment.
 
-When assigning a child model, choose only from models confirmed available in the
-current environment. Prefer the cheapest model that is adequate for code search,
-ordinary edits, and test execution. If model overrides are unsupported, use the
-configured `explorer` and `executor` roles without fabricating an override.
+Mark model routing as **PINNED** when the user authorizes an exact model, and use
+that model only if callable with required tools/permissions. Mark it **CAPABILITY**
+when the user specifies capability and cost constraints but no exact model; choose
+a callable model that meets them. State the actual chosen model or `UNKNOWN`. For
+a requested model unavailable in-session, use only the user-authorized fallback;
+otherwise pause that subtask and report the block. If overrides are unsupported,
+use configured native roles only when callable and permitted; do not silently
+change the primary model.
 
 For a bounded task that needs visual browser or desktop interaction, assign the
 UI steps to the configured `computer_operator` role when it is available. Keep
@@ -216,3 +223,17 @@ and [tool-agent-team README](https://github.com/deepseek-ai/deepseek-harness/blo
 Report the files changed, tests actually run and their results, remaining issues,
 and any version-specific limitation. Keep the final response concise and
 evidence-based.
+
+
+## Plan approval gate
+
+For multi-step work, model delegation, or cross-host dispatch, the primary first
+presents a chat plan and waits for user confirmation before implementation or
+publishing. A revised proposal is not confirmation. A complete supplied plan skips replanning only when the user explicitly
+authorizes execution. A `READY`/`approved` label or plan presence alone is not
+approval. Verify current paths, access, and commands, then start authorized ready
+tasks. A clear simple task explicitly
+requested by the user may proceed directly. The plan includes a subtask table:
+objective, difficulty and rationale, required model/capability, cost, tool,
+dependencies, and validation, plus affected files, acceptance, risks, and any
+external action. Use `UNKNOWN` for unverified model/cost/access.

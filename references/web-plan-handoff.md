@@ -1,34 +1,48 @@
 # Web plan handoff
 
-Ask the web planner for a compact plan that Codex can execute directly. Paste
-the plan into the Codex task, attach it, or provide an accessible path or link.
-The web planner should not claim it has inspected local files unless it had
-access to the same repository revision.
+Present the proposal to the user on the planning host. Revisions stay in chat
+until the user confirms execution. For a repository handoff, publish the
+confirmed plan with a short record of the user's approval and its scope. The
+receiving Executor verifies live prerequisites and proceeds directly from that
+record. A READY label by itself does not establish authorization. A clear,
+explicitly requested simple task can proceed directly.
+
+The planner must not claim it inspected local files unless it had access to the
+same repository revision. Use `unknown` for unverified repository facts, models,
+costs, and permissions.
 
 ```text
 Goal: <observable outcome>
-Repository/revision: <path and commit or "unverified">
-Decisions and constraints: <only decisions Codex must preserve>
+Repository/revision: <path and commit or unverified>
+Decisions and constraints: <only decisions that must be preserved>
+Approval state: <proposal, or user explicitly authorized execution>
 
 Tasks:
 - ID: T1
-  Role/model: <Explorer, Executor, or specialist; preferred model if known>
   Objective: <one bounded outcome>
-  Files/ownership: <relevant paths; sole editor for each shared file>
+  Difficulty and reason: <level and brief rationale>
+  Model routing: <PINNED exact model, or CAPABILITY requirements; actual model or UNKNOWN>
+  Cost: <estimate or unknown>
+  Tool/host: <native agent, CLI, connector, or UI tool>
+  Files/ownership: <relevant paths; sole writer for shared files>
   Depends on: <IDs or none>
   Steps: <concrete actions and error behavior>
   Acceptance: <observable conditions>
-  Tests: <existing commands, or "discover from project">
+  Validation: <discovered commands and expected evidence>
 
-Final review: <what Codex must check across all tasks>
+Final review: <what to check across tasks>
+External actions: <publishing or other externally visible changes>
 ```
 
-Keep the task list short. Separate tasks only when ownership or dependencies
-make delegation useful. State uncertain paths as hypotheses. Codex checks live
-repository facts, dispatches ready tasks, and reports any material deviation
-from the handoff instead of replanning the whole request.
+Example subtask table for any host:
 
-For a task that must click or inspect a browser or desktop app, use
-`computer_operator / gpt-6.1-terra` as its preferred role/model and name the
-target app plus the UI result to verify. Codex must still confirm that the
-computer-use tool and app permission are available in the execution session.
+| Subtask | Difficulty and reason | Model (PINNED/CAPABILITY; actual or UNKNOWN) | Cost | Tool/host | Depends on | Validation |
+| --- | --- | --- | --- | --- | --- | --- |
+| T1: inspect parser callers | Level 2: several files | CAPABILITY: coding; actual or UNKNOWN | Low/unknown | Native workspace | None | Parser tests and diff review |
+
+Keep the plan short. Separate tasks only when ownership or dependencies justify
+it. Verify requested models are callable with required tools and permissions; a
+model catalog alone is not proof. In CAPABILITY mode, use the current host/model
+when it meets the need. Use only authorized fallbacks, preserve the current
+primary model, and do not recursively delegate.
+For UI work, name the app, required result, and available UI permissions.
