@@ -1,164 +1,55 @@
 ---
 name: planner-executor-workflow
-description: Route non-trivial coding tasks through high-capability planning and review plus lower-cost exploration, implementation, and tests; skip trivial edits.
+description: Plan, execute, and verify coding tasks in Codex, DeepSeek Harness, or OpenClaw. Use native subagents when appropriate and coordinate CLI helpers from Codex.
 ---
 
 # Planner–Executor Workflow
 
-Use this skill to route coding work through the current Codex project's configured
-`explorer` and `executor` agents. Keep model selection in the effective Codex
-configuration; do not hardcode model IDs in task instructions.
+First identify the active host from runtime metadata and its documented skill format. Apply only that host's execution rules below. Keep provider/model choices user-configured; project `AGENTS.md` and formal task files (`TASK.md` or equivalent) take priority over this general workflow.
 
-## Before starting
+## Shared rules
 
-Read the nearest applicable `AGENTS.md` and preserve its project-specific rules,
-commands, and constraints. Inspect the repository only as much as needed to
-classify the task and discover its existing validation commands.
+Read the nearest applicable `AGENTS.md`; preserve its technology, commands, scope, and constraints. Inspect only what is needed to identify relevant files, dependencies, and existing validation commands. Never invent test commands. For a supplied plan, read it first and verify only live facts needed for safe execution. If repository reality conflicts, stop the affected step and report the actual state and smallest adjustment.
 
-## Route by the active model
+Keep changes bounded, preserve unrelated data, and never expose secrets or modify `.git` internals. A delegation helper must never recursively delegate or invoke another AI helper. Do not claim a model, agent, review, or read-only guarantee that was not verified.
 
-Before delegating, determine the current primary model's role from runtime
-metadata, the effective configuration, or documented model capabilities. Do not
-infer capability from a guessed model name and do not invent model IDs.
+## Codex host
 
-- **High-capability primary:** keep the current model as Planner, Architect, and
-  Reviewer. For Level 2–3 work, use the platform's supported delegation mechanism
-  to create or select lower-cost, coding-capable agents for repository discovery,
-  implementation, and tests. Default to one read-only Explorer and one
-  workspace-writing Executor. Give each agent a bounded task and retain planning,
-  difficult diagnosis, acceptance decisions, and final review in the primary
-  model.
-- **Lower-cost primary:** do not claim that a high-capability review occurred. If
-  the environment exposes a configured high-capability planner, escalate the
-  planning or final review to it. Otherwise execute the smallest safe workflow
-  directly, keep changes bounded, and disclose that the high-capability review
-  stage was unavailable.
-- **Unknown capability:** preserve the effective configuration and use the normal
-  project defaults. Ask for clarification only when choosing a model would cause
-  material cost or behavior differences that cannot be resolved from the
-  environment.
+For native role handoffs, review, and repairs, follow [Codex agent workflow](references/codex-agents.md) subject to the current project rules. Codex may use its configured native agent/delegation flow when agents are available and authorized. Keep planning, difficult diagnosis, acceptance, and final review with the primary agent; assign bounded discovery or implementation tasks according to the project plan and configured roles. If agents are unavailable, do the work directly and report that fallback. For browser/desktop work, use the configured computer operator only when available; prefer a suitable connector for structured operations.
 
-When assigning a child model, choose only from models confirmed available in the
-current environment. Prefer the cheapest model that is adequate for code search,
-ordinary edits, and test execution. If model overrides are unsupported, use the
-configured `explorer` and `executor` roles without fabricating an override.
+Codex alone may invoke the optional `agy` and `dsh` CLI helpers described below. Verify their actual availability, permissions, and configured provider/model before use; otherwise follow the authorized fallback, or report the blocked step if the task requires that helper. CLI helpers perform only their assigned bounded operation and never spawn agents or call other models/tools that invoke models.
 
-Classify the request before delegating:
+### Optional Antigravity planning helper
 
-- **Level 0 — trivial:** copy, formatting, one variable, or an obvious one-to-five-line edit. The primary agent works directly; do not spawn an agent.
-- **Level 1 — simple:** a small single-file feature or obvious bug. The primary agent may send one precise task to `executor`, then perform a quick review.
-- **Level 2 — normal:** a multi-file feature, API, data operation, integration, or ordinary refactor. Use the full flow below.
-- **Level 3 — complex:** architecture, authentication, authorization, security, migrations, consistency, concurrency, protocol, caching, or large refactor. Use the full flow with deeper planning and conservative execution.
+For a bounded planning/search task only, the documented invocation is:
 
-## Level 2–3 flow
-
-### 1. Explore
-
-When the high-capability primary route is active, create or select exactly one
-lower-cost `explorer` to perform bounded, read-only discovery. It may search and
-read files but must not edit files, make architecture decisions, or spawn other
-agents. Ask for a concise report with only these sections:
-
-```text
-Relevant files
-Important symbols
-Execution flow
-Dependencies
-Risks
-Likely modifications
+```sh
+agy -p "$task" --model "$model" --mode plan --sandbox --output-format json --print-timeout 60s
 ```
 
-Prefer paths, symbol names, short excerpts, and evidence over full-file copies.
+`--mode plan` and `--sandbox` do not prove read-only behavior. Inspect the CLI's current help and sandbox semantics, constrain the prompt to planning, and do not grant write/delegation steps. Treat output as a draft for Codex to verify.
 
-### 2. Plan
+### Optional DeepSeek Harness helper
 
-The primary agent is Planner, Architect, and Reviewer. Use the user request and
-the Explorer report to produce a mechanical handoff for `executor` containing:
+For bounded work on selected input, the documented invocation is:
 
-```text
-Objective
-Relevant files
-Steps
-Constraints
-Acceptance criteria
-Tests
+```sh
+timeout 60s dsh headless --patch "$patch" --permission-mode read-only --approval-policy never - < task.txt
 ```
 
-Name the target files and symbols, inputs and outputs, error behavior, affected
-callers, tests, and observable acceptance conditions. Do not repeat a repository-
-wide search already covered by Explorer. Select test, lint, typecheck, and build
-commands from the project's manifests, task runners, documentation, and CI;
-never invent unrelated commands.
+Use a task-specific outer timeout suitable for the job. The example uses GNU timeout. On hosts without it, set the deadline in the process runner. After timeout, verify backend termination before reassigning any writable work. Confirm the installed CLI's flags and route first. `--permission-mode read-only` constrains the helper session; the outer environment remains authoritative. Feed only the minimum selected input, inspect the result, and do not let the helper execute, delegate, or invoke another AI.
 
-### 3. Execute
+## Standalone DeepSeek Harness or OpenClaw host
 
-Send the approved handoff to one lower-cost, coding-capable `executor`. It has
-workspace-write permission and may create or modify only the files required by
-the plan. It should make the smallest compatible change, add focused tests where
-needed, and run the existing validation commands. It must not redesign the
-architecture, broaden scope, replace the technology stack, alter unrelated
-files, expose secrets, or modify `.git` internals.
+The active host owns planning, implementation, validation, and final review. Its primary assistant may assign bounded work to native subagents when supported and authorized. Keep one writer per file, honor task dependencies, and review the results. Work directly when delegation is unavailable. Cross-platform CLI dispatch belongs to the Codex host. If the host's skill guidance differs, follow its documented runtime behavior while preserving project constraints.
 
-If the plan cannot be executed as written, Executor stops the affected change
-and reports the blocked step, cause, verified project state, and smallest
-recommended adjustment instead of improvising a new design.
+## Complexity and completion
 
-Executor's completion report must contain:
+- **Level 0:** clear, trivial copy or one-to-five-line edit; act directly.
+- **Level 1:** small single-file change; use the smallest suitable workflow.
+- **Level 2:** ordinary multi-file change; plan, execute, validate, and review against project evidence.
+- **Level 3:** genuine architecture, security, permission, consistency, migration, or concurrency risk; use the host's strongest supported planning/review path and conservative execution.
 
-```text
-Files changed
-Implementation summary
-Tests
-Results
-Remaining issues
-Risks
-```
+For coding tasks, establish Objective, Relevant files, Steps, Constraints, Acceptance criteria, and Tests before execution. Add focused tests when required by the plan and run only discovered or specified validation commands. Review the focused diff and actual command results. Report changed files, implementation, tests, results, remaining issues, and risks. If a repair is needed, make it narrow and validate it.
 
-### 4. Validate and review
-
-The primary agent reviews the original request, plan, Executor summary, `git
-status`, focused `git diff`, reported test output, and key changed files. Check
-requirement coverage, omissions, regressions, security, unintended files,
-compatibility, error handling, and test adequacy. Do not reread the entire
-repository unless the evidence is contradictory or incomplete.
-
-### 5. Repair
-
-When review finds a defect, send a narrow task to the same Executor using:
-
-```text
-Defect
-Expected
-File
-Required change
-Validation
-```
-
-Allow at most two ordinary repair loops. After a second failure, the primary
-agent decides whether to replan or take over only the genuinely difficult part.
-
-## Concurrency, cost, and safety
-
-- Default to one Explorer and one Executor. Parallelize only fully independent
-  read-only or edit tasks with disjoint file ownership.
-- Never let two Executors edit the same file, lockfile, migration, shared
-  configuration, or tightly coupled module concurrently. Serial execution is the
-  default.
-- Keep high-capability reasoning for requirements, architecture, diagnosis,
-  planning, and review. Keep search, reading, mechanical edits, ordinary tests,
-  and documentation with the lower-cost agents.
-- Pass paths, symbols, short evidence, diffs, errors, and test results instead of
-  full source files. Do not repeat Explorer's search or Executor's summary.
-- Preserve unrelated files and user data. Do not print or commit `.env` values or
-  API keys; do not delete databases, run dangerous shell commands, or make broad
-  destructive changes without an explicit plan and impact check.
-
-If configured custom agents or platform delegation are unavailable, follow the
-same stages directly with the primary agent or report the limitation clearly;
-never claim that a delegated or high-capability review stage ran when it did not.
-
-## Completion
-
-Report the files changed, tests actually run and their results, remaining issues,
-and any version-specific limitation. Keep the final response concise and
-evidence-based.
+See [web plan handoff](references/web-plan-handoff.md) for a compact supplied-plan format and [model examples](references/models.md) for non-binding helper examples.

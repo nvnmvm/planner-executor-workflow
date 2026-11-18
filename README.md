@@ -1,42 +1,40 @@
 # Planner–Executor Workflow
 
-Reusable Codex skill for routing non-trivial coding tasks through concise
-exploration, explicit planning, bounded implementation, tests, and a final diff
-review.
+English · [简体中文](README.zh-CN.md)
 
-## Invoke
+A **skill** is a set of instructions an AI assistant can load for a particular kind of task. This skill helps a coding assistant take a change from a request or an existing plan through implementation, tests, and review. It uses the tools and permissions already available in the host.
 
-Use `$planner-executor-workflow` explicitly, or let Codex invoke it when a task
-matches its description. Trivial one-to-five-line changes should stay direct.
+## When to use it
 
-## Workflow
+Use it for work where several steps must fit together, such as changing a parser, updating its callers, and verifying compatibility with existing inputs. The assistant identifies the files and acceptance criteria, assigns work where useful, and reviews the actual diff and test output. Its final report tells you what changed, which checks ran, and what remains unverified. A small edit can go straight to implementation.
 
-```text
-User → Explorer → Planner → Executor → Tests → Reviewer → Repair if necessary
-```
+If you already have a plan from another conversation, supply the plan or a readable file. The assistant checks its assumptions against the repository and picks up the ready tasks. [Plan handoff template](references/web-plan-handoff.md)
 
-The skill uses the current project's effective Codex configuration for model
-routing. When the active primary model is confirmed to be high-capability, it
-keeps planning and review while delegating search, ordinary implementation, and
-tests to lower-cost coding agents. It does not embed a model ID, credentials, or
-user-specific paths. When delegation or the configured `explorer`/`executor`
-roles are unavailable, the primary agent follows the same stages directly and
-reports that fallback.
+## How the hosts divide the work
 
-## Install locally
+| Where you start | Who does the work |
+| --- | --- |
+| Codex | Codex owns planning and final review. It can delegate to native subagents, ask Antigravity via `agy` to research a bounded question, or ask DeepSeek Harness via `dsh headless` to extract or summarize selected material. |
+| DeepSeek Harness or OpenClaw | The host plans, executes, and reviews its own task. It may delegate to native subagents when available and authorized. |
+| An assistant called by Codex via CLI | The assistant handles the assigned subtask and returns evidence to Codex. Delegation stops with that assistant. |
 
-Copy this directory to the user's Codex skills directory:
+Project instructions and formal task plans take priority over the skill's defaults. Optional CLI helpers require a working CLI, an accessible model, and permissions appropriate to the subtask. [Workflow and CLI examples](SKILL.md)
+
+## Get started
+
+For a first-time Codex installation on macOS or Linux:
 
 ```sh
-cp -R planner-executor-workflow ~/.codex/skills/
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+git clone https://github.com/nvnmvm/planner-executor-workflow.git "${CODEX_HOME:-$HOME/.codex}/skills/planner-executor-workflow"
 ```
 
-The exact directory is normally `$CODEX_HOME/skills/planner-executor-workflow`.
+In a Codex conversation, try:
 
-## Contents
+> Use $planner-executor-workflow to update the parser to accept an empty field. Preserve existing inputs, run the relevant parser tests, and report any cases you could not verify.
 
-- `SKILL.md` — the runtime instructions.
-- `agents/openai.yaml` — the display name and invocation prompt used by Codex.
+For **OpenClaw**, place the skill folder at `<workspace>/skills/planner-executor-workflow/` and ask the workspace assistant to use it for the task. For **DeepSeek Harness**, place the repository where the session can read it and ask “Read `planner-executor-workflow/SKILL.md` and follow the standalone DeepSeek Harness workflow for this task.”
 
-This repository contains instructions only. Keep project-specific `AGENTS.md`,
-secrets, tokens, backups, and generated files outside it.
+## Model updates
+
+Keep provider-specific model IDs, reasoning settings, and dated verification evidence in the model reference. When a model changes, check what the CLI exposes and run a small representative task before changing a default. [Model reference](references/models.md)
