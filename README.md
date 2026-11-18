@@ -14,11 +14,18 @@ If you already have a plan from another conversation, supply the plan or a reada
 
 | Where you start | Who does the work |
 | --- | --- |
-| Codex | Codex owns planning and final review. It can delegate to native subagents, ask Antigravity via `agy` to research a bounded question, or ask DeepSeek Harness via `dsh headless` to extract or summarize selected material. |
+| Codex | Codex owns planning and final review. Execution stays within Codex by default. The primary can assign bounded work to an available lower-cost native model such as Luna. |
 | DeepSeek Harness or OpenClaw | The host plans, executes, and reviews its own task. It may delegate to native subagents when available and authorized. |
 | An assistant called by Codex via CLI | The assistant handles the assigned subtask and returns evidence to Codex. Delegation stops with that assistant. |
 
 Project instructions and formal task plans take priority over the skill's defaults. Optional CLI helpers require a working CLI, an accessible model, and permissions appropriate to the subtask. [Workflow and CLI examples](SKILL.md)
+
+## Request an external helper from Codex
+
+Name the helper and the job in your prompt. Codex handles the CLI invocation and reviews the result.
+
+- “Use Antigravity with Gemini Flash to look up the official documentation for this flag and give me the source.” Codex checks the model ID with `agy models` and passes it to `agy -p` via `--model`.
+- “Use DeepSeek Harness with my configured Aliyun Flash model to extract the errors from this excerpt.” Codex selects the provider/model overlay with `dsh headless --patch` and sends the excerpt on standard input.
 
 ## Get started
 

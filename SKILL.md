@@ -1,6 +1,6 @@
 ---
 name: planner-executor-workflow
-description: Plan, execute, and verify coding tasks in Codex, DeepSeek Harness, or OpenClaw. Use native subagents when appropriate and coordinate CLI helpers from Codex.
+description: Plan, execute, and verify coding tasks in Codex, DeepSeek Harness, or OpenClaw. Use native subagents when appropriate and invoke external CLI helpers only on explicit request from Codex users.
 ---
 
 # Planner–Executor Workflow
@@ -17,7 +17,7 @@ Keep changes bounded, preserve unrelated data, and never expose secrets or modif
 
 For native role handoffs, review, and repairs, follow [Codex agent workflow](references/codex-agents.md) subject to the current project rules. Codex may use its configured native agent/delegation flow when agents are available and authorized. Keep planning, difficult diagnosis, acceptance, and final review with the primary agent; assign bounded discovery or implementation tasks according to the project plan and configured roles. If agents are unavailable, do the work directly and report that fallback. For browser/desktop work, use the configured computer operator only when available; prefer a suitable connector for structured operations.
 
-Codex alone may invoke the optional `agy` and `dsh` CLI helpers described below. Verify their actual availability, permissions, and configured provider/model before use; otherwise follow the authorized fallback, or report the blocked step if the task requires that helper. CLI helpers perform only their assigned bounded operation and never spawn agents or call other models/tools that invoke models.
+Default to Codex-native models for both planning and execution. The primary plans and reviews; use an available lower-cost native executor such as Luna when delegation is worthwhile. Invoke an external helper only when the user explicitly requests that helper for this task, directly or in a user-approved task plan. Installation, free quota, and general helper preferences do not select a CLI. Limit the call to the named helper and requested scope. Verify their actual availability, permissions, and configured provider/model before use; otherwise follow the authorized fallback, or report the blocked step if the task requires that helper. CLI helpers perform only their assigned bounded operation and never spawn agents or call other models/tools that invoke models.
 
 ### Optional Antigravity planning helper
 

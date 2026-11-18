@@ -14,11 +14,18 @@
 
 | 从哪里发起 | 谁来完成 |
 | --- | --- |
-| Codex | Codex 负责规划和最终验收。它可以调原生子智能体，也可以通过 `agy` 让 Antigravity 调研一个具体问题，或通过 `dsh headless` 让 DeepSeek Harness 从指定材料中提取信息、整理摘要。 |
+| Codex | Codex 负责规划和最终验收。执行默认也在 Codex 内完成。适合拆分的工作，可以交给当前可用的低成本原生模型，例如 Luna。 |
 | DeepSeek Harness 或 OpenClaw | 当前平台自己规划、执行和审查。平台支持且任务允许时，可以调用自己的原生子智能体。 |
 | 由 Codex 通过 CLI 调起的助手 | 助手完成被分配的子任务，把结果和证据交回 Codex。派工到这一层结束。 |
 
 项目自身的规则和正式任务单优先。要使用可选的 CLI 助手，当前环境需要能运行相应命令、访问所选模型，并具备执行子任务所需的权限。[工作规则与 CLI 示例](SKILL.md)
+
+## 怎样在 Codex 里点名外部助手
+
+在对话里说清助手名称和任务范围即可。Codex 会调用相应的 CLI，并检查返回结果。
+
+- “这一步用 Antigravity 的 Gemini Flash 查一下这个参数的官方文档，附上来源。” Codex 用 `agy models` 核对型号，再通过 `agy -p` 的 `--model` 参数指定模型。
+- “用 DeepSeek Harness 的阿里云 Flash 模型，从这段日志里提取错误信息。” Codex 通过 `dsh headless --patch` 选择已配置的提供商和模型，把日志片段从标准输入传入。
 
 ## 开始使用
 
