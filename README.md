@@ -4,11 +4,57 @@ English · [简体中文](README.zh-CN.md)
 
 A **skill** is a set of instructions an AI assistant can load for a particular kind of task. This skill helps a coding assistant take a change from a request or an existing plan through implementation, tests, and review. It uses the tools and permissions already available in the host.
 
-## When to use it
+## Example: Add dark mode to a personal website
 
-Use it for work where several steps must fit together, such as changing a parser, updating its callers, and verifying compatibility with existing inputs. The assistant identifies the files and acceptance criteria, assigns work where useful, and reviews the actual diff and test output. Its final report tells you what changed, which checks ran, and what remains unverified. A clear, simple task explicitly requested by the user can go straight to implementation. For multi-step work, model delegation, or cross-host execution, the assistant first presents a plan in chat and waits for confirmation before implementation or publishing. Editing the proposal is not approval. A supplied plan skips replanning only when the user explicitly authorizes execution; a `READY`/`approved` label or the plan being pasted alone is not approval.
+Ask Codex to “Use the Planner–Executor Skill to plan dark mode for my website.” It presents a plan for your approval:
 
-If you already have a plan from another conversation, supply the plan or a readable file. The assistant checks its assumptions against the repository and picks up the ready tasks. [Plan handoff template](references/web-plan-handoff.md)
+| Subtask | Difficulty | Suggested model or capability | Acceptance check |
+| --- | --- | --- | --- |
+| Locate color definitions and theme entry points | Low | Low-cost native model with repository access | Identify the relevant files and existing theme logic |
+| Add a toggle and persist the preference | Medium | Native model that can edit the frontend and run tests | Switching works and survives a reload |
+| Check readability in both themes | Medium | Execution host with browser tools | Links, text, and focus states are clearly visible |
+
+Say “Execute this plan” to start in the current session. To hand it off, say “Execute this plan and upload it to 项目闭环” so the next host can read the confirmed task. [Project workspace](https://github.com/nvnmvm/ai-xiangmu-bihuan) · [Plan handoff template](references/web-plan-handoff.md)
+
+In this example, `gpt-6-luna` can take bounded execution work. Approved alternatives include `gemini-3.8-flash-medium` for organizing theme findings and `deepseek-v4.1-flash-1017` for summarizing selected evidence. Browser checks require a host with browser tools. GPT reviews the final changes and evidence.
+
+## Installation and quick start
+
+Install Git and the assistant you intend to use. The clone commands below are for a first install. Update an existing Git installation with `git pull --ff-only` from its skill directory.
+
+### Codex
+
+Ask Codex to “Use `$skill-installer` to install the root skill from `nvnmvm/planner-executor-workflow`,” or run the terminal commands below. Reopen Codex after installation and try `$planner-executor-workflow`.
+
+**macOS / Linux**
+
+```sh
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+git clone https://github.com/nvnmvm/planner-executor-workflow.git "${CODEX_HOME:-$HOME/.codex}/skills/planner-executor-workflow"
+```
+
+**Windows PowerShell**
+
+```powershell
+$codexRoot = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME '.codex' }
+$skillDirectory = Join-Path $codexRoot 'skills'
+New-Item -ItemType Directory -Force -Path $skillDirectory | Out-Null
+git clone https://github.com/nvnmvm/planner-executor-workflow.git (Join-Path $skillDirectory 'planner-executor-workflow')
+```
+
+### OpenClaw
+
+From the active assistant workspace, clone the repository as shown below. Then ask the assistant in that workspace to use `planner-executor-workflow`.
+
+```sh
+git clone https://github.com/nvnmvm/planner-executor-workflow.git skills/planner-executor-workflow
+```
+
+### DeepSeek Harness
+
+Clone the repository to a location accessible to the session. Ask it to “Read `planner-executor-workflow/SKILL.md` and plan this task using the standalone DeepSeek Harness workflow.”
+
+Installation references: [OpenAI Skills](https://github.com/openai/skills#installing-a-skill) and the [OpenClaw workspace skills guide](https://docs.openclaw.ai/tools/skills).
 
 ## How the hosts divide the work
 
@@ -26,21 +72,6 @@ Name the helper and job explicitly for this task. Codex verifies access, uses on
 
 - “Use Antigravity with Gemini Flash to look up the official documentation for this flag and give me the source.” Codex checks the model ID with `agy models` and passes it to `agy -p` via `--model`.
 - “Use DeepSeek Harness with my configured Aliyun Flash model to extract the errors from this excerpt.” Codex selects the provider/model overlay with `dsh headless --patch` and sends the excerpt on standard input.
-
-## Get started
-
-For a first-time Codex installation on macOS or Linux:
-
-```sh
-mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
-git clone https://github.com/nvnmvm/planner-executor-workflow.git "${CODEX_HOME:-$HOME/.codex}/skills/planner-executor-workflow"
-```
-
-In a Codex conversation, try:
-
-> Use $planner-executor-workflow to update the parser to accept an empty field. Preserve existing inputs, run the relevant parser tests, and report any cases you could not verify.
-
-For **OpenClaw**, place the skill folder at `<workspace>/skills/planner-executor-workflow/` and ask the workspace assistant to use it for the task. For **DeepSeek Harness**, place the repository where the session can read it and ask “Read `planner-executor-workflow/SKILL.md` and follow the standalone DeepSeek Harness workflow for this task.”
 
 ## Model updates
 

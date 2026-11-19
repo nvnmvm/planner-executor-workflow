@@ -4,11 +4,57 @@
 
 **Skill（技能）是一套 AI 助手可以按需读取的工作说明。** 这个 Skill 用于编码任务。你可以给助手一个需求，也可以交给它一份已有计划。它会用当前平台已有的工具和权限完成修改、测试和审查。
 
-## 什么时候用
+## 实际场景：给个人网站加深色模式
 
-例如，修改解析器时，你既要让它接受空字段，又要保证旧数据仍能读取。这个 Skill 会引导助手找到受影响的文件和调用方，明确怎样才算改好，按需分派子任务，最后检查实际改动和测试输出。你能从结果里看到改了什么、跑过哪些检查、还有哪些情况未验证。用户明确提出的简单任务可以直接动手。多步骤、模型委派或跨平台任务，要先在对话里给出可审阅的计划，等用户确认后再实施或发布。修改计划草稿不算确认；只有用户明确授权执行的计划才无需重复规划；计划里出现 READY/approved 字样或用户仅仅贴出计划，都不算批准。
+你在 Codex 里说「用规划技能规划一下给个人网站加深色模式」。助手先给出方案，等你确认：
 
-如果已经在网页会话里写好了计划，把计划贴过来，或提供助手能读取的文件。助手会核对计划里的路径和依赖，从已具备条件的任务开始执行。[计划交接模板](references/web-plan-handoff.md)
+| 子任务 | 难度 | 建议模型或能力 | 验收 |
+| --- | --- | --- | --- |
+| 找出颜色定义和主题入口 | 低 | 可读仓库的低成本原生模型 | 列出相关文件和现有主题逻辑 |
+| 实现切换并保存偏好 | 中 | 能修改前端并运行测试的原生模型 | 切换生效，刷新后保留选择 |
+| 检查两种主题的可读性 | 中 | 能在浏览器验证的执行端 | 链接、文本和焦点状态清晰可见 |
+
+说「按方案执行」可以在当前会话开工。如果想换到另一台电脑执行，就说「按这个方案执行，上传到项目闭环」，把确认版交给相应项目的执行端。[项目闭环](https://github.com/nvnmvm/ai-xiangmu-bihuan) · [计划交接模板](references/web-plan-handoff.md)
+
+这份示例可用 `gpt-6-luna` 承担范围明确的执行项。确认后也可用 `gemini-3.8-flash-medium` 整理主题线索，或用 `deepseek-v4.1-flash-1017` 从选定材料提取验证摘要。浏览器检查由具备相应工具的执行端完成，最终由 GPT 审查改动和证据。
+
+## 安装与快速开始
+
+需要先安装 Git 和你准备使用的助手。下面的克隆命令用于首次安装。已经通过 Git 安装的用户可在对应目录运行 `git pull --ff-only` 更新。
+
+### Codex
+
+在对话里发「用 `$skill-installer` 安装 GitHub 仓库 `nvnmvm/planner-executor-workflow` 根目录的 Skill」。也可以用下面的终端命令。安装后重新打开 Codex，输入 `$planner-executor-workflow` 试用。
+
+**macOS / Linux**
+
+```sh
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+git clone https://github.com/nvnmvm/planner-executor-workflow.git "${CODEX_HOME:-$HOME/.codex}/skills/planner-executor-workflow"
+```
+
+**Windows PowerShell**
+
+```powershell
+$codexRoot = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME '.codex' }
+$skillDirectory = Join-Path $codexRoot 'skills'
+New-Item -ItemType Directory -Force -Path $skillDirectory | Out-Null
+git clone https://github.com/nvnmvm/planner-executor-workflow.git (Join-Path $skillDirectory 'planner-executor-workflow')
+```
+
+### OpenClaw
+
+进入当前助手的工作区，把仓库克隆到下面的位置。安装后，在该工作区发「用 planner-executor-workflow 规划这个任务」。
+
+```sh
+git clone https://github.com/nvnmvm/planner-executor-workflow.git skills/planner-executor-workflow
+```
+
+### DeepSeek Harness
+
+把仓库克隆到当前会话可读取的位置，然后发「读取 `planner-executor-workflow/SKILL.md`，按 DeepSeek Harness 独立运行的流程规划这个任务」。
+
+安装写法参考 [OpenAI Skills](https://github.com/openai/skills#installing-a-skill) 和 [OpenClaw 工作区技能指南](https://docs.openclaw.ai/tools/skills)。
 
 ## 三个平台怎么分工
 
@@ -26,21 +72,6 @@
 
 - “这一步用 Antigravity 的 Gemini Flash 查一下这个参数的官方文档，附上来源。” Codex 用 `agy models` 核对型号，再通过 `agy -p` 的 `--model` 参数指定模型。
 - “用 DeepSeek Harness 的阿里云 Flash 模型，从这段日志里提取错误信息。” Codex 通过 `dsh headless --patch` 选择已配置的提供商和模型，把日志片段从标准输入传入。
-
-## 开始使用
-
-在 macOS 或 Linux 上首次为 **Codex** 安装时，运行：
-
-```sh
-mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
-git clone https://github.com/nvnmvm/planner-executor-workflow.git "${CODEX_HOME:-$HOME/.codex}/skills/planner-executor-workflow"
-```
-
-然后在 Codex 会话里试一句：
-
-> 用 $planner-executor-workflow 修改解析器，让它接受空字段，保持已有输入兼容。运行相关解析测试，并告诉我还有哪些情况没验证。
-
-使用 **OpenClaw** 时，把技能目录放到 `<workspace>/skills/planner-executor-workflow/`，在对应工作区里让助手用它处理任务。使用 **DeepSeek Harness** 时，把仓库放在会话可读取的位置，然后告诉助手：“读取 `planner-executor-workflow/SKILL.md`，按 DeepSeek Harness 独立运行的流程完成这个任务。”
 
 ## 模型怎么更新
 
