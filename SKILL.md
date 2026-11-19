@@ -19,7 +19,11 @@ A clear, simple task explicitly requested by the user can proceed directly. For 
 
 | Subtask | Difficulty and reason | Model routing (PINNED/CAPABILITY; actual or UNKNOWN) | Cost | Tool/host | Depends on | Validation |
 | --- | --- | --- | --- | --- | --- | --- |
-| T1: inspect affected parser and callers | Level 2: several files and compatibility impact | CAPABILITY: code-capable; actual model or UNKNOWN | Low/unknown | Native workspace tools | None | Existing parser tests and caller review |
+| T1: inspect affected parser and callers | Level 2: several files and compatibility impact | CAPABILITY: code-capable. GPT: `gpt-6-luna`; Gemini: `gemini-3.8-flash-medium`; DeepSeek: `deepseek-v4.1-flash-1017` for selected excerpts | Low/unknown | Native workspace tools | None | Existing parser tests and caller review |
+
+For each execution subtask, give exact model IDs for the GPT first choice, the Gemini alternative, and the DeepSeek alternative. Use [model examples](references/models.md) and current host evidence. Label recommendations whose availability is unverified. If a provider has no suitable verified model ID for the work, say so. Recommendations are planning inputs; actual dispatch follows the approved task, host capabilities and explicit CLI authorization.
+
+Name an exact GPT model for final review, with GPT as the only provider for that step. Execution hosts may run their own checks and report evidence. If no suitable GPT reviewer is callable, return the evidence to the designated GPT Planner and mark final review pending.
 
 Editing a proposal, choosing a model, or returning a revised draft is not approval. Begin implementation or publishing only after an unambiguous confirmation. A supplied, complete plan may proceed without repeating the planning step only when the user explicitly authorizes that plan for execution (for example, says to execute it). A `READY` or `approved` label in a plan, or its presence in the task, is not by itself user approval. Verify only live facts needed for safe execution. Carry the user’s recorded confirmation, approved revision or plan summary, and scope in the handoff. In a GitHub handoff, confirmation to execute the presented plan authorizes posting its task sheet and executing its listed steps. An execution host reading that approval proceeds directly. If authorization is unclear, ask before dependent work. Formal project task routing and `AGENTS.md` remain authoritative within their scope.
 

@@ -28,3 +28,6 @@ reveal it. Do not change the primary model to satisfy a subtask.
 External CLI helpers require explicit authorization for the current task. General
 preferences, installed tools, or available quota are not authorization. Do not
 chain helpers or recursively delegate.
+
+
+For bounded execution, use `gpt-6-luna` as a GPT example if the host offers it. For final review, name the user-selected or available GPT reviewer, such as `gpt-6.1-sol`. Confirm the runtime before reporting a review as complete. The Gemini and DeepSeek entries above are execution alternatives within the stated scopes.

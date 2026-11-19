@@ -22,6 +22,7 @@ Tasks:
   Objective: <one bounded outcome>
   Difficulty and reason: <level and brief rationale>
   Model routing: <PINNED exact model, or CAPABILITY requirements; actual model or UNKNOWN>
+  Execution models: <GPT exact ID; Gemini exact ID; DeepSeek exact ID; state scope and unverified availability>
   Cost: <estimate or unknown>
   Tool/host: <native agent, CLI, connector, or UI tool>
   Files/ownership: <relevant paths; sole writer for shared files>
@@ -30,7 +31,7 @@ Tasks:
   Acceptance: <observable conditions>
   Validation: <discovered commands and expected evidence>
 
-Final review: <what to check across tasks>
+Final review: <exact GPT model ID, evidence to check, and GPT handoff if unavailable>
 External actions: <publishing or other externally visible changes>
 ```
 
@@ -38,7 +39,7 @@ Example subtask table for any host:
 
 | Subtask | Difficulty and reason | Model (PINNED/CAPABILITY; actual or UNKNOWN) | Cost | Tool/host | Depends on | Validation |
 | --- | --- | --- | --- | --- | --- | --- |
-| T1: inspect parser callers | Level 2: several files | CAPABILITY: coding; actual or UNKNOWN | Low/unknown | Native workspace | None | Parser tests and diff review |
+| T1: inspect parser callers | Level 2: several files | CAPABILITY: coding; GPT `gpt-6-luna`, Gemini `gemini-3.8-flash-medium`, DeepSeek `deepseek-v4.1-flash-1017` for selected excerpts | Low/unknown | Native workspace | None | Parser tests and diff review |
 
 Keep the plan short. Separate tasks only when ownership or dependencies justify
 it. Verify requested models are callable with required tools and permissions; a
