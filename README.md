@@ -1,4 +1,4 @@
-# Planner–Executor Workflow
+# Planner–Executor Workflow · 规划技能
 
 English · [简体中文](README.zh-CN.md)
 
