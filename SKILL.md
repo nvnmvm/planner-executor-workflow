@@ -66,4 +66,6 @@ The active host owns planning, implementation, validation, and final review. Use
 
 For coding tasks, establish Objective, Relevant files, Steps, Constraints, Acceptance criteria, and Tests before execution. Add focused tests when required by the plan and run only discovered or specified validation commands. Review the focused diff and actual command results. Report changed files, implementation, tests, results, remaining issues, and risks. If a repair is needed, make it narrow and validate it.
 
+For plans and final reports addressed to the user, lead with the main point. Use the terms the user and sources use, explain each technical term in one sentence at first use, and keep the technical detail and context the reader needs. Use active voice and keep related details together. Write the final report so it stands on its own without earlier progress updates or internal shorthand.
+
 See [web plan handoff](references/web-plan-handoff.md) for a compact supplied-plan format and [model examples](references/models.md) for non-binding helper examples.
