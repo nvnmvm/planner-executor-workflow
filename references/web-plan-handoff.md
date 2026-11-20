@@ -27,7 +27,8 @@ Tasks:
   Tool/host: <native agent, CLI, connector, or UI tool>
   Files/ownership: <relevant paths; sole writer for shared files>
   Depends on: <IDs or none>
-  Steps: <concrete actions and error behavior>
+  Steps: <stable step ID | concrete action | expected observation>
+  Execution record: <same step ID | actual result | evidence or unrun reason | next step if needed>
   Acceptance: <observable conditions>
   Validation: <discovered commands and expected evidence>
 
@@ -47,3 +48,16 @@ model catalog alone is not proof. In CAPABILITY mode, use the current host/model
 when it meets the need. Use only authorized fallbacks, preserve the current
 primary model, and do not recursively delegate.
 For UI work, name the app, required result, and available UI permissions.
+
+## Worked example: Reject a mismatched task result
+
+One owner delivers a single outcome: the workspace checker reports a RESULT
+whose task ID differs from its TASK. Model selection applies to this whole
+subtask. The following observations are expectations for the plan.
+
+| Step | Action | Expected observation |
+| --- | --- | --- |
+| T1.1 | In a disposable project copy, change only the current RESULT ID. Run the existing checker against the copy. | The old checker passes, reproducing the missed mismatch. If it already rejects the input, record that and reassess. |
+| T1.2 | Compare the IDs from the dedicated task headings. Exercise the changed check with the same copy. | A failing check identifies the conflicting record. |
+| T1.3 | Check a matching pair, an idle project, a task awaiting a RESULT and a record mentioning an old ID in prose. | Each valid case passes. |
+| T1.4 | Record the commands, observed outcomes and revision for T1.1–T1.3. | The next host can locate the tested change and distinguish verified cases from any still open. |
