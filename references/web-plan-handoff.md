@@ -49,6 +49,18 @@ when it meets the need. Use only authorized fallbacks, preserve the current
 primary model, and do not recursively delegate.
 For UI work, name the app, required result, and available UI permissions.
 
+## Worked example: One optional exporter behavior
+
+T1 delivers one outcome: the exporter can skip blank lines when requested and preserves existing output by default. One owner handles the whole change. Recommended GPT executor: `gpt-6-luna` (availability unverified). Execution alternatives: `gemini-3.8-flash-medium` for bounded investigation or `deepseek-v4.1-flash-1017` for inspecting selected sample text; each requires appropriate tools and authorization for its scope.
+
+| Step | Action | Expected observation |
+| --- | --- | --- |
+| T1.1 | Locate the export entry point, option handling and existing fixtures. Capture default output for a mixed input. | The plan now has verified paths and a baseline to compare against. |
+| T1.2 | Add the opt-in filter at the identified boundary. | With the option enabled, whitespace-only lines disappear and nonblank entries retain their formatting. |
+| T1.3 | Compare default output with the baseline, then check enabled output on the same fixture. | Both checks have recorded results, with any skipped check identified. |
+
+Final review: `gpt-6.1-sol` (availability unverified) checks the approved behavior and regression evidence.
+
 ## Worked example: Reject a mismatched task result
 
 One owner delivers a single outcome: the workspace checker reports a RESULT
