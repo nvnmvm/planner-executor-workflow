@@ -1,5 +1,7 @@
 # 规划技能 · Planner–Executor Workflow
 
+普通规划可由 Gemini 4 Hydrogen 或 GPT-6.2 Sol 拆解需求、依赖和验收条件。跨模块设计可选 Gemini 4 Neon 或 Sol。高风险规划由项目指定的 GPT Astra 负责，最终由 GPT 验收。[模型测评与任务分配](references/model-scorecard.md)
+
 [English](README.md) · 简体中文
 
 **Skill（技能）是一套 AI 助手可以按需读取的工作说明。** 这个 Skill 用于编码任务。你可以给助手一个需求，也可以交给它一份已有计划。它会用当前平台已有的工具和权限完成修改、测试和审查。

@@ -1,5 +1,7 @@
 # Planner–Executor Workflow · 规划技能
 
+For ordinary plans, Hydrogen or GPT-6.2 Sol can turn clear requirements into steps and acceptance checks. Neon or Sol can plan work with cross-module dependencies. The designated GPT Astra handles high-risk planning, and GPT owns final review. [Model scores and task routing](references/model-scorecard.md)
+
 English · [简体中文](README.zh-CN.md)
 
 A **skill** is a set of instructions an AI assistant can load for a particular kind of task. This skill helps a coding assistant take a change from a request or an existing plan through implementation, tests, and review. It uses the tools and permissions already available in the host.

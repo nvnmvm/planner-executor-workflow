@@ -11,6 +11,8 @@ After any provider/model update, record the date, exact CLI version/help evidenc
 
 On 2026-11-18, the Antigravity CLI listed the Gemini identifier above via `agy models`. The DeepSeek identifier comes from a configured provider route. Neither observation verifies an inference run. Refresh the list on model releases and verify a bounded task before promoting a new default.
 
+The [model scorecard](model-scorecard.md) records planning candidates, benchmark settings and the November 21 connectivity checks. Use the task-specific planning choices in SKILL.md for the plan author.
+
 ## Runtime verification and routing labels
 
 A model name in a CLI catalog is not evidence that the active session can call it

@@ -37,6 +37,12 @@ For native role handoffs, review, and repairs, follow [Codex agent workflow](ref
 
 Default to the current host's native tools and models. For CAPABILITY routing, use the current host/model when it meets the requested capability and permissions; do not switch the primary model just to match a label. Invoke an external helper only when the user explicitly names and authorizes it for this task. Do not treat general preferences, installation, quota, or availability as authorization. Use only the named helper and approved scope; never chain helpers or recursively delegate. See [model routing and verification](references/models.md).
 
+### Choose the plan author by task
+
+For ordinary Codex planning, recommend one author based on the work. For clear requirements needing steps, dependencies and acceptance checks, choose Gemini 4 Hydrogen (`gemini-4-hydrogen-medium`) or GPT-6.2 Sol (`gpt-6.2-sol`). For cross-module tradeoffs or complex data workflows, consider Gemini 4 Neon (`gemini-4-neon-medium`) or Sol. Prefer a repository-equipped Sol when planning requires repeated local inspection. An authorized Gemini author can draft the complete plan from supplied evidence. Codex verifies repository assumptions before presenting it. The GPT-first execution examples apply to execution subtasks.
+
+For Level 3 work, use the project-designated GPT Astra for difficult planning and review. Neon may contribute an independent proposal when authorized. Retain GPT final acceptance. Consult the [dated scores and task suitability ratings](references/model-scorecard.md) when choosing among candidates. Check the exact effort and available tools at dispatch.
+
 ### Optional Antigravity planning helper
 
 For a bounded planning/search task only, the documented invocation is:
