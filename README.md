@@ -1,34 +1,34 @@
-# Planner–Executor Workflow · 规划技能
+# 规划技能 · Planner–Executor Workflow
 
-For ordinary plans, Hydrogen or GPT-6.2 Sol can turn clear requirements into steps and acceptance checks. Neon or Sol can plan work with cross-module dependencies. The designated GPT Astra handles high-risk planning, and GPT owns final review. [Model scores and task routing](references/model-scorecard.md)
+普通规划可由 Gemini 4 Hydrogen 或 GPT-6.2 Sol 拆解需求、依赖和验收条件。跨模块设计可选 Gemini 4 Neon 或 Sol。高风险规划由项目指定的 GPT Astra 负责，最终由 GPT 验收。[模型测评与任务分配](references/model-scorecard.md)
 
-English · [简体中文](README.zh-CN.md)
+简体中文 · [English](README.en.md)
 
-A **skill** is a set of instructions an AI assistant can load for a particular kind of task. This skill helps a coding assistant take a change from a request or an existing plan through implementation, tests, and review. It uses the tools and permissions already available in the host.
+**Skill（技能）是一套 AI 助手可以按需读取的工作说明。** 这个 Skill 用于编码任务。你可以给助手一个需求，也可以交给它一份已有计划。它会用当前平台已有的工具和权限完成修改、测试和审查。
 
-## Example: Add dark mode to a personal website
+## 实际场景：给个人网站加深色模式
 
-Ask Codex to “Use the Planner–Executor Skill to plan dark mode for my website.” It presents a plan for your approval:
+你在 Codex 里说「用规划技能规划一下给个人网站加深色模式」。助手先给出方案，等你确认：
 
-Illustrative walkthrough. The checks below describe expected evidence.
+以下是演示，展示计划与验收写法。
 
-| Subtask | Difficulty | Suggested model or capability | Acceptance check |
+| 子任务 | 难度 | 建议模型或能力 | 验收 |
 | --- | --- | --- | --- |
-| Locate color definitions and theme entry points | Low | Low-cost native model with repository access | Identify the relevant files and existing theme logic |
-| Add a toggle and persist the preference | Medium | Native model that can edit the frontend and run tests | Switching works and survives a reload |
-| Check readability in both themes | Medium | Execution host with browser tools | Links, text, and focus states are clearly visible |
+| 找出颜色定义和主题入口 | 低 | 可读仓库的低成本原生模型 | 列出相关文件和现有主题逻辑 |
+| 实现切换并保存偏好 | 中 | 能修改前端并运行测试的原生模型 | 切换生效，刷新后保留选择 |
+| 检查两种主题的可读性 | 中 | 能在浏览器验证的执行端 | 链接、文本和焦点状态清晰可见 |
 
-Say “Execute this plan” to start in the current session. To hand it off, say “Execute this plan and upload it to 项目闭环” so the next host can read the confirmed task. [Project workspace](https://github.com/nvnmvm/ai-xiangmu-bihuan) · [Plan handoff template](references/web-plan-handoff.md)
+说「按方案执行」可以在当前会话开工。如果想换到另一台电脑执行，就说「按这个方案执行，上传到项目闭环」，把确认版交给相应项目的执行端。[项目闭环](https://github.com/nvnmvm/ai-xiangmu-bihuan) · [计划交接模板](references/web-plan-handoff.md)
 
-For the implementation, recommend `gpt-6-luna` for a bounded edit with existing tests. Add a fallback only when a concrete switching condition applies. GPT reviews the result.
+实现主题切换可首选 `gpt-6-luna`，因为改动范围明确，也有具体验收步骤。有实际切换条件时再列备用模型，最后由 GPT 验收。
 
-## Installation and quick start
+## 安装与快速开始
 
-Install Git and the assistant you intend to use. The clone commands below are for a first install. Update an existing Git installation with `git pull --ff-only` from its skill directory.
+需要先安装 Git 和你准备使用的助手。下面的克隆命令用于首次安装。已经通过 Git 安装的用户可在对应目录运行 `git pull --ff-only` 更新。
 
 ### Codex
 
-Ask Codex to “Use `$skill-installer` to install the root skill from `nvnmvm/planner-executor-workflow`,” or run the terminal commands below. Reopen Codex after installation and try `$planner-executor-workflow`.
+在对话里发「用 `$skill-installer` 安装 GitHub 仓库 `nvnmvm/planner-executor-workflow` 根目录的 Skill」。也可以用下面的终端命令。安装后重新打开 Codex，输入 `$planner-executor-workflow` 试用。
 
 **macOS / Linux**
 
@@ -48,7 +48,7 @@ git clone https://github.com/nvnmvm/planner-executor-workflow.git (Join-Path $sk
 
 ### OpenClaw
 
-From the active assistant workspace, clone the repository as shown below. Then ask the assistant in that workspace to use `planner-executor-workflow`.
+进入当前助手的工作区，把仓库克隆到下面的位置。安装后，在该工作区发「用 planner-executor-workflow 规划这个任务」。
 
 ```sh
 git clone https://github.com/nvnmvm/planner-executor-workflow.git skills/planner-executor-workflow
@@ -56,37 +56,37 @@ git clone https://github.com/nvnmvm/planner-executor-workflow.git skills/planner
 
 ### DeepSeek Harness
 
-Clone the repository to a location accessible to the session. Ask it to “Read `planner-executor-workflow/SKILL.md` and plan this task using the standalone DeepSeek Harness workflow.”
+把仓库克隆到当前会话可读取的位置，然后发「读取 `planner-executor-workflow/SKILL.md`，按 DeepSeek Harness 独立运行的流程规划这个任务」。
 
-Installation references: [OpenAI Skills](https://github.com/openai/skills#installing-a-skill) and the [OpenClaw workspace skills guide](https://docs.openclaw.ai/tools/skills).
+安装写法参考 [OpenAI Skills](https://github.com/openai/skills#installing-a-skill) 和 [OpenClaw 工作区技能指南](https://docs.openclaw.ai/tools/skills)。
 
-## How the hosts divide the work
+## 三个平台怎么分工
 
-| Where you start | Who does the work |
+| 从哪里发起 | 谁来完成 |
 | --- | --- |
-| Codex | Codex plans and reviews its own work. Native delegation requires a callable model and suitable permissions. External CLI helpers require explicit authorization for this task. |
-| DeepSeek Harness or OpenClaw | The active host performs its own workflow using its native capabilities; follow the plan approval gate above. |
-| Codex-authorized CLI helper | Handles only its named bounded subtask and returns evidence. It never delegates recursively. |
+| Codex | Codex 负责规划。如果 Codex 按另一位 Planner 的计划担任 Executor，正式验收仍由原 Planner 负责。原生委派须确认模型可调用且权限合适；外部 CLI 须获得针对本任务的明确授权。 |
+| DeepSeek Harness 或 OpenClaw | 当前平台用自身能力完成工作，并遵守上述计划确认要求。按 CAPABILITY 选择时，当前模型满足要求就继续使用。 |
+| 经 Codex 授权的 CLI 助手 | 只完成指定的有限子任务并交回证据，不继续递归委派。 |
 
-When Codex acts as Executor under a plan from another Planner, that original Planner retains formal acceptance. Project instructions and formal task plans take priority over the skill's defaults. A model appearing in a catalog does not prove it is callable or has required tools/permissions. State model routing as PINNED (exact authorized model) or CAPABILITY (requirements), and report the actual model or UNKNOWN. Use only an explicitly authorized fallback; do not force a primary-model change. [Workflow and CLI examples](SKILL.md)
+项目自身的规则和正式任务单优先。模型出现在列表中不代表当前会话能调用它，也不代表它拥有所需工具和权限。模型路由应标为 PINNED（已授权的准确型号）或 CAPABILITY（能力要求），并报告实际型号或 UNKNOWN。只能使用明确授权的备用方案，不要擅自更换主模型。[工作规则与 CLI 示例](SKILL.md)
 
-## Request an external helper from Codex
+## 怎样在 Codex 里点名外部助手
 
-Name the helper and job explicitly for this task. Codex verifies access, uses only the authorized scope, and reviews the result.
+针对当前任务明确说出助手名称和任务范围。Codex 会先确认访问权限，只执行获准范围，并检查返回结果。
 
-- “Use Antigravity with Gemini Flash to look up the official documentation for this flag and give me the source.” Codex checks the model ID with `agy models` and passes it to `agy -p` via `--model`.
-- “Use DeepSeek Harness with my configured Aliyun Flash model to extract the errors from this excerpt.” Codex selects the provider/model overlay with `dsh headless --patch` and sends the excerpt on standard input.
+- “这一步用 Antigravity 的 Gemini Flash 查一下这个参数的官方文档，附上来源。” Codex 用 `agy models` 核对型号，再通过 `agy -p` 的 `--model` 参数指定模型。
+- “用 DeepSeek Harness 的阿里云 Flash 模型，从这段日志里提取错误信息。” Codex 通过 `dsh headless --patch` 选择已配置的提供商和模型，把日志片段从标准输入传入。
 
-## Model updates
+## 模型怎么更新
 
-Keep provider-specific model IDs, reasoning settings, and dated verification evidence in the model reference. When a model changes, check what the CLI exposes and run a small representative task before changing a default. [Model reference](references/models.md)
+模型 ID、推理档位和带日期的验证记录集中维护在模型参考文件里。新模型发布后，先查 CLI 能识别的型号，再用一个有代表性的小任务验证调用结果，之后再决定是否更换默认模型。[模型参考](references/models.md)
 
-## Update, uninstall and licensing
+## 更新、卸载与许可证
 
-Install with Git and a host that can read the skill directory. Update a Git clone with `git pull --ff-only` in that directory. For an installer-managed copy, follow its update procedure. To uninstall, move the skill directory out of the host’s skill search path and start a new session. If DeepSeek Harness reads the file by explicit path, remove that reference.
+首次安装需要 Git 和能读取技能目录的宿主。Git 克隆安装可在技能目录执行 `git pull --ff-only` 更新。用安装器安装的副本按该安装器的流程更新。卸载时将该技能目录移出宿主的技能搜索路径，再重开会话。若 DeepSeek Harness 通过显式路径读取，移除该引用即可。
 
-See the [host capability matrix](references/host-capabilities.md) for checks across all three hosts. The skill supplies instructions. The host supplies tools and dispatch.
+[宿主能力表](references/host-capabilities.md)列出三种宿主需要现场核对的能力。技能提供指令，实际分配与执行依赖宿主工具。
 
-Three examples: fix a README typo directly. For a single-file bug, one agent reproduces, fixes and retests it. For the cross-module dark mode example above, obtain approval, implement the change, record reload and keyboard checks, and hand the evidence to GPT for acceptance.
+三个难度示例：README 错别字直接修正；单文件 Bug 由同一人复现、修复和重测；上面的跨模块深色模式先确认，再执行，记录刷新后的主题选择和键盘检查结果，最后交 GPT 核对需求和证据。
 
-The license is pending the author’s choice. MIT is a short permissive option. Apache-2.0 includes explicit patent terms. Review third-party content and its permissions before licensing the repository for reuse.
+许可证待作者选择。可考虑 MIT（简短的宽松许可证）或 Apache-2.0（含明确专利条款），公开复用前应先核对第三方内容与相应授权。
