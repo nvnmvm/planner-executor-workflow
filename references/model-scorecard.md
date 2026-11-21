@@ -19,14 +19,13 @@ Argo-Bench v1.4.3 让模型完成 210 个企业数据任务。下列分数是平
 |GPT-6 Sol|Extra high|34.7|
 |DeepSeek V4.1 Flash 1017|Max|31.3|
 |Gemini 3.8 Flash|High|24.4|
-|DeepSeek V4.1 Flash 初版|Max|23.1|
 |GPT-6 Luna|Extra high|12.8|
 
 ## 其他测评和覆盖缺口
 
 - Gemini 4 Hydrogen 在 Agents’ Last Exam v1.1 知识工作测试为 71.6%，GPT-6.1 Terra 为 69.8%。Hydrogen 使用 Antigravity CLI，默认最高思考档。Terminal-Bench 4.1 测试用 High，成绩 57.0%。这些是不同题集的原始成绩。[Google 评测方法和成绩](https://storage.googleapis.com/deepmind-media/gemini/gemini_4_hydrogen_model_evaluation.pdf)
 - GPT-5.6 Sol、Terra、Luna 在 SWE-Bench Pro 软件工程测试分别为 64.6%、63.4%、62.7%。适合用来判断旧型号的代码执行能力。[OpenAI 成绩表](https://openai.com/index/gpt-5-6/)
-- DeepSeek V4.1 Flash 初版的 DeepSWE v1.1 成绩为 74.2%；1017 有单独榜单记录，见上。DeepSeek V4-Pro-0813 是另一公开型号，本机工作流只配置了 1017。旧 V4 Flash 的兼容名称可能映射到新型号。[DeepSeek 更新记录](https://api-docs.deepseek.com/updates/)
+- DeepSeek V4-Pro-0813 是另一公开型号，本机工作流只配置了 1017。旧 V4 Flash 的兼容名称可能映射到新型号。[DeepSeek 更新记录](https://api-docs.deepseek.com/updates/)
 - GPT-OSS 120B Medium、Neon 和 Argon 两个 Orchestrator 编排入口缺少本表可直接比较的规划分。编排入口可能调用多个模型，不能继承底层模型的分。Carbon 本机未列出。前次仅对 Neon 编排入口、Gemini 四个普通系列的 Medium 和 GPT-OSS 做过单轮连通测试，没有对其进行项目规划验收。
 
 ## 建议采用的分配规则
