@@ -10,6 +10,8 @@ A **skill** is a set of instructions an AI assistant can load for a particular k
 
 Ask Codex to “Use the Planner–Executor Skill to plan dark mode for my website.” It presents a plan for your approval:
 
+Illustrative walkthrough. The checks below describe expected evidence.
+
 | Subtask | Difficulty | Suggested model or capability | Acceptance check |
 | --- | --- | --- | --- |
 | Locate color definitions and theme entry points | Low | Low-cost native model with repository access | Identify the relevant files and existing theme logic |
@@ -78,3 +80,13 @@ Name the helper and job explicitly for this task. Codex verifies access, uses on
 ## Model updates
 
 Keep provider-specific model IDs, reasoning settings, and dated verification evidence in the model reference. When a model changes, check what the CLI exposes and run a small representative task before changing a default. [Model reference](references/models.md)
+
+## Update, uninstall and licensing
+
+Install with Git and a host that can read the skill directory. Update a Git clone with `git pull --ff-only` in that directory. For an installer-managed copy, follow its update procedure. To uninstall, move the skill directory out of the host’s skill search path and start a new session. If DeepSeek Harness reads the file by explicit path, remove that reference.
+
+See the [host capability matrix](references/host-capabilities.md) for checks across all three hosts. The skill supplies instructions. The host supplies tools and dispatch.
+
+Three examples: fix a README typo directly. For a single-file bug, one agent reproduces, fixes and retests it. For the cross-module dark mode example above, obtain approval, implement the change, record reload and keyboard checks, and hand the evidence to GPT for acceptance.
+
+The license is pending the author’s choice. MIT is a short permissive option. Apache-2.0 includes explicit patent terms. Review third-party content and its permissions before licensing the repository for reuse.

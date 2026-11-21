@@ -9,7 +9,7 @@ Follow the active host’s rules, the nearest applicable `AGENTS.md` and the app
 
 ## Plan and approval
 
-Handle a clear, explicitly requested simple task directly. For multi-step work, delegation or cross-host execution, present the plan in chat and wait for explicit approval before implementation or publication. Editing the draft, selecting a model or marking a task READY does not authorize execution. Carry the approved revision, scope and confirmation into the handoff. The recipient proceeds after checking live prerequisites. If evidence conflicts with the plan, pause the affected step and report the smallest adjustment.
+Handle explicitly requested Level 0 edits and bounded Level 1 fixes directly with one agent. Reuse verified paths and checks when current, and inspect only gaps. Escalate when the change crosses module boundaries or introduces material risk. For multi-step work, delegation or cross-host execution, present the plan in chat and wait for explicit approval before implementation or publication. Editing the draft, selecting a model or marking a task READY does not authorize execution. Carry the approved revision, scope and confirmation into the handoff. The recipient proceeds after checking live prerequisites. If evidence conflicts with the plan, pause the affected step and report the smallest adjustment.
 
 State the goal, affected files, constraints, risks and intended external actions. Use one row and one owner per independently acceptable outcome. Keep its discovery, implementation and validation together. Use the [handoff template](references/web-plan-handoff.md).
 
