@@ -33,3 +33,23 @@ chain helpers or recursively delegate.
 
 
 For bounded execution, use `gpt-6-luna` as a GPT example if the host offers it. For final review, name the user-selected or available GPT reviewer, such as `gpt-6.1-sol`. Confirm the runtime before reporting a review as complete. The Gemini and DeepSeek entries above are execution alternatives within the stated scopes.
+
+### Optional Antigravity planning helper
+
+For a bounded planning/search task only, the documented invocation is:
+
+```sh
+agy -p "$task" --model "$model" --mode plan --sandbox --output-format json --print-timeout 60s
+```
+
+`--mode plan` and `--sandbox` do not prove read-only behavior. Inspect the CLI's current help and sandbox semantics, constrain the prompt to planning, and do not grant write/delegation steps. Treat output as a draft for Codex to verify.
+
+### Optional DeepSeek Harness helper
+
+For bounded work on selected input, the documented invocation is:
+
+```sh
+timeout 60s dsh headless --patch "$patch" --permission-mode read-only --approval-policy never - < task.txt
+```
+
+Use a task-specific outer timeout suitable for the job. The example uses GNU timeout. On hosts without it, set the deadline in the process runner. After timeout, verify backend termination before reassigning any writable work. Confirm the installed CLI's flags and route first. `--permission-mode read-only` constrains the helper session; the outer environment remains authoritative. Feed only the minimum selected input, inspect the result, and do not let the helper execute, delegate, or invoke another AI.

@@ -18,7 +18,7 @@ Ask Codex to “Use the Planner–Executor Skill to plan dark mode for my websit
 
 Say “Execute this plan” to start in the current session. To hand it off, say “Execute this plan and upload it to 项目闭环” so the next host can read the confirmed task. [Project workspace](https://github.com/nvnmvm/ai-xiangmu-bihuan) · [Plan handoff template](references/web-plan-handoff.md)
 
-In this example, `gpt-6-luna` can take bounded execution work. Approved alternatives include `gemini-3.8-flash-medium` for organizing theme findings and `deepseek-v4.1-flash-1017` for summarizing selected evidence. Browser checks require a host with browser tools. GPT reviews the final changes and evidence.
+For the implementation, recommend `gpt-6-luna` for a bounded edit with existing tests. Add a fallback only when a concrete switching condition applies. GPT reviews the result.
 
 ## Installation and quick start
 

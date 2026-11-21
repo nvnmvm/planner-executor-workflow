@@ -42,7 +42,7 @@ a change. Report the actual model, or `UNKNOWN` when the runtime does not expose
   implementation, and tests. Default to one behaviorally read-only Explorer and
   one Executor that may edit only when the parent session's effective permissions
   allow it; role instructions constrain behavior and do not grant tool access.
-  Give each agent a bounded task and retain planning,
+  The selected plan author may draft the full plan. Give each agent a bounded task and retain responsibility for repository verification,
   difficult diagnosis, acceptance decisions, and final review in the primary
   model.
 - **Lower-cost primary:** do not claim that a high-capability review occurred. If
@@ -224,16 +224,4 @@ Report the files changed, tests actually run and their results, remaining issues
 and any version-specific limitation. Keep the final response concise and
 evidence-based.
 
-
-## Plan approval gate
-
-For multi-step work, model delegation, or cross-host dispatch, the primary first
-presents a chat plan and waits for user confirmation before implementation or
-publishing. A revised proposal is not confirmation. A complete supplied plan skips replanning only when the user explicitly
-authorizes execution. A `READY`/`approved` label or plan presence alone is not
-approval. Verify current paths, access, and commands, then start authorized ready
-tasks. A clear simple task explicitly
-requested by the user may proceed directly. The plan includes a subtask table:
-objective, difficulty and rationale, required model/capability, cost, tool,
-dependencies, and validation, plus affected files, acceptance, risks, and any
-external action. Use `UNKNOWN` for unverified model/cost/access.
+Follow the [shared approval rules](../SKILL.md#plan-and-approval).

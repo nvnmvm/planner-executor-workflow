@@ -1,11 +1,6 @@
 # Web plan handoff
 
-Present the proposal to the user on the planning host. Revisions stay in chat
-until the user confirms execution. For a repository handoff, publish the
-confirmed plan with a short record of the user's approval and its scope. The
-receiving Executor verifies live prerequisites and proceeds directly from that
-record. A READY label by itself does not establish authorization. A clear,
-explicitly requested simple task can proceed directly.
+Follow the [approval rules](../SKILL.md#plan-and-approval). For a GitHub handoff, confirmation to execute the presented plan authorizes posting its task sheet and executing its listed steps. Include the confirmation and its scope so the receiver can proceed directly.
 
 The planner must not claim it inspected local files unless it had access to the
 same repository revision. Use `unknown` for unverified repository facts, models,
@@ -22,7 +17,8 @@ Tasks:
   Objective: <one bounded outcome>
   Difficulty and reason: <level and brief rationale>
   Model routing: <PINNED exact model, or CAPABILITY requirements; actual model or UNKNOWN>
-  Execution models: <GPT exact ID; Gemini exact ID; DeepSeek exact ID; state scope and unverified availability>
+  Preferred model: <exact ID, reason, known availability>
+  Optional fallback: <model and switching condition; omit if unnecessary>
   Cost: <estimate or unknown>
   Tool/host: <native agent, CLI, connector, or UI tool>
   Files/ownership: <relevant paths; sole writer for shared files>
@@ -40,7 +36,7 @@ Example subtask table for any host:
 
 | Subtask | Difficulty and reason | Model (PINNED/CAPABILITY; actual or UNKNOWN) | Cost | Tool/host | Depends on | Validation |
 | --- | --- | --- | --- | --- | --- | --- |
-| T1: inspect parser callers | Level 2: several files | CAPABILITY: coding; GPT `gpt-6-luna`, Gemini `gemini-3.8-flash-medium`, DeepSeek `deepseek-v4.1-flash-1017` for selected excerpts | Low/unknown | Native workspace | None | Parser tests and diff review |
+| T1: inspect parser callers | Level 2: several files | CAPABILITY: coding; `gpt-6-luna` for bounded repository inspection (availability unverified) | Low/unknown | Native workspace | None | Parser tests and diff review |
 
 Keep the plan short. Separate tasks only when ownership or dependencies justify
 it. Verify requested models are callable with required tools and permissions; a
@@ -51,7 +47,7 @@ For UI work, name the app, required result, and available UI permissions.
 
 ## Worked example: One optional exporter behavior
 
-T1 delivers one outcome: the exporter can skip blank lines when requested and preserves existing output by default. One owner handles the whole change. Recommended GPT executor: `gpt-6-luna` (availability unverified). Execution alternatives: `gemini-3.8-flash-medium` for bounded investigation or `deepseek-v4.1-flash-1017` for inspecting selected sample text; each requires appropriate tools and authorization for its scope.
+T1 delivers one outcome: the exporter can skip blank lines when requested and preserves existing output by default. One owner handles the whole change. Recommended GPT executor: `gpt-6-luna` (availability unverified).
 
 | Step | Action | Expected observation |
 | --- | --- | --- |
